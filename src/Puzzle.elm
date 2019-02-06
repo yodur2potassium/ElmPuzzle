@@ -1,8 +1,11 @@
 import Browser
 
-import Html exposing (Html, button, div)
+import Html exposing (Html, button, div, h1, text)
+import Html.Events exposing (onClick)
 
 -- Model
+
+type alias Model = {}
 
 type Orientation = Up | Left | Down | Right
 
@@ -32,3 +35,18 @@ isConnected side =
 
         Empty ->
             False
+
+-- Update
+
+type Msg = Rotate
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Rotate ->
+            model
+
+-- View
+
+view : Model -> Html Msg
+view model =
+    div [] [ button [ onClick Rotate ] [ text "Rotate" ] ]
