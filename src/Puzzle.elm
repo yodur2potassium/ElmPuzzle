@@ -3,9 +3,15 @@ import Browser
 import Html exposing (Html, button, div, h1, text)
 import Html.Events exposing (onClick)
 
+main =
+  Browser.sandbox { init = init, update = update, view = view }
+
 -- Model
 
 type alias Model = {}
+
+init: Model
+init = {}
 
 type Orientation = Up | Left | Down | Right
 
