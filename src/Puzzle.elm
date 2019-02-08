@@ -10,8 +10,11 @@ main =
 
 type alias Model = {}
 
-init: Model
-init = {}
+init: Tile
+init = {
+    sides = [ Connected True, Empty, Connected False, Empty ],
+    orientation = Up
+    }
 
 type Orientation = Up | Left | Down | Right
 
@@ -42,17 +45,28 @@ isConnected side =
         Empty ->
             False
 
+rotateLeft : List a -> List a
+rotateLeft list = 
+    case list of
+        [] ->
+            []
+        
+        x :: xs ->
+            xs ++ [x]
+
 -- Update
 
 type Msg = Rotate
-update : Msg -> Model -> Model
-update msg model =
+update : Msg -> Tile -> Tile
+update msg tile =
     case msg of
         Rotate ->
-            model
+            tile
 
 -- View
 
-view : Model -> Html Msg
-view model =
-    div [] [ button [ onClick Rotate ] [ text "Rotate" ] ]
+view : Tile -> Html Msg
+view tile =
+    div [] 
+        [ button [ onClick Rotate ] [ text "Rotate" ]
+        , div [] [text "test" ] ]
