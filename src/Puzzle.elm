@@ -3,6 +3,10 @@ import Browser
 import Html exposing (Html, button, div, h1, text)
 import Html.Events exposing (onClick)
 
+import Collage exposing (..)
+import Collage.Render exposing (svg)
+import Color exposing (Color)
+
 main =
   Browser.sandbox { init = init, update = update, view = view }
 
@@ -65,8 +69,12 @@ update msg tile =
 
 -- View
 
+testTile = square 50
+            |> filled (uniform Color.red)
+            |> svg
+
 view : Tile -> Html Msg
 view tile =
     div [] 
         [ button [ onClick Rotate ] [ text "Rotate" ]
-        , div [] [text "test" ] ]
+        , div [] [ testTile ] ]
