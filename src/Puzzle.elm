@@ -4,6 +4,7 @@ import Html exposing (Html, button, div, h1, text)
 import Html.Events exposing (onClick)
 
 import Collage exposing (..)
+import Collage.Layout exposing (stack)
 import Collage.Render exposing (svg)
 import Color exposing (Color)
 
@@ -69,12 +70,31 @@ update msg tile =
 
 -- View
 
-testTile = square 50
-            |> filled (uniform Color.red)
+testTile tile =  stack
+            [ orientationToPath tile.orientation
+                |> traced (defaultLineStyle),
+            square 50
+                |> filled (uniform Color.lightYellow)
+            ]
             |> svg
+
+orientationToPath : Orientation -> Path
+orientationToPath orientation =
+    case orientation of
+        Up ->
+          segment (0,0) (0,25)  
+    
+        Right ->
+            segment (0,0) (25,0)
+
+        Down ->
+            segment (0,0) (0,-25)
+        
+        Left ->
+            segment (0,0) (-25,0)
 
 view : Tile -> Html Msg
 view tile =
     div [] 
         [ button [ onClick Rotate ] [ text "Rotate" ]
-        , div [] [ testTile ] ]
+        , div [] [ testTile init ] ]
