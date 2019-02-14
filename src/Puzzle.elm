@@ -16,9 +16,10 @@ main =
 type alias Model = {}
 
 init: Tile
+-- init = [Side (Connected False) Up, Side Empty Right, Side (Connected True) Down, Side Empty Left]
 init = {
-    sides = [ Connected True, Empty, Connected False, Empty ],
-    orientation = Up
+    sides = [Connected False, Empty, Connected True, Empty],
+    orientations = [Up, Right, Down, Left]
     }
 
 type Orientation = Up | Left | Down | Right
@@ -27,7 +28,12 @@ type Side
     = Connected Bool
     | Empty
 
-type alias Tile = { sides : List Side, orientation : Orientation }
+-- type alias Side = {connection: Connection, orientation: Orientation}
+
+type alias Tile = {
+    sides: List Side,
+    orientations: List Orientation
+    }
 
 hasConnection : Side -> Bool
 hasConnection side = 
@@ -71,12 +77,25 @@ update msg tile =
 -- View
 
 testTile tile =  stack
-            [ orientationToPath tile.orientation
+            [ line 50
                 |> traced (defaultLineStyle),
             square 50
                 |> filled (uniform Color.lightYellow)
             ]
             |> svg
+
+drawSide: Side -> Orientation -> Path
+drawSide side orientation =
+    case hasConnection side of
+        True ->
+            orientationToPath orientation
+    
+        False ->
+            segment (0,0) (0,0)
+
+-- drawTile: Tile -> Collage Msg
+-- drawTile tile = List.map2 drawSide tile.sides tile.orientations
+                     
 
 orientationToPath : Orientation -> Path
 orientationToPath orientation =
