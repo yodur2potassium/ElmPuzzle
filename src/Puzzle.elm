@@ -115,6 +115,15 @@ testTile tile =
         ]
         |> svg
 
+renderTile : Tile -> Html Msg
+renderTile tile =
+    stack
+    [
+        stack (stackPaths tile |> List.map (traced defaultLineStyle))
+        , square 50
+            |> filled (uniform Color.lightBlue)
+    ]
+        |> svg
 
 drawSide : Side -> Orientation -> Maybe Path
 drawSide side orientation =
@@ -125,6 +134,9 @@ drawSide side orientation =
         False ->
             Nothing
 
+stackPaths : Tile -> List Path
+stackPaths tile = List.map2 drawSide tile.sides tile.orientations |> List.filterMap identity
+ 
 
 orientationToPath : Orientation -> Path
 orientationToPath orientation =
@@ -146,5 +158,5 @@ view : Tile -> Html Msg
 view tile =
     div []
         [ button [ onClick Rotate ] [ text "Rotate" ]
-        , div [] [ testTile init ]
+        , div [] [ renderTile init ]
         ]
