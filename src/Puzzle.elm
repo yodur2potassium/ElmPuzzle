@@ -92,15 +92,6 @@ update msg tile =
 
 -- View
 
-testTile tile =
-    stack
-        [ line 50
-            |> traced defaultLineStyle
-        , square 50
-            |> filled (uniform Color.lightYellow)
-        ]
-        |> svg
-
 renderTile : Tile -> Html Msg
 renderTile tile =
     stack
