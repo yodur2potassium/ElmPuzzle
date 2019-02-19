@@ -14,20 +14,9 @@ main =
 
 -- Model
 
-
-type alias Model =
-    {}
-
-
 init : Tile
-
-
-
--- init = [Side (Connected False) Up, Side Empty Right, Side (Connected True) Down, Side Empty Left]
-
-
 init =
-    { sides = [ Connected False, Empty, Connected True, Empty ]
+    { sides = [ Empty, Connected False, Connected True, Empty ]
     , orientations = [ Up, Right, Down, Left ]
     }
 
@@ -42,10 +31,6 @@ type Orientation
 type Side
     = Connected Bool
     | Empty
-
-
-
--- type alias Side = {connection: Connection, orientation: Orientation}
 
 
 type alias Tile =
@@ -86,10 +71,12 @@ rotateLeft list =
         x :: xs ->
             xs ++ [ x ]
 
+rotateTile : Tile -> Tile
+rotateTile tile =
+    { tile | sides = rotateLeft tile.sides }
 
 
 -- Update
-
 
 type Msg
     = Rotate
@@ -99,12 +86,11 @@ update : Msg -> Tile -> Tile
 update msg tile =
     case msg of
         Rotate ->
-            tile
+            rotateTile tile
 
 
 
 -- View
-
 
 testTile tile =
     stack
@@ -158,5 +144,5 @@ view : Tile -> Html Msg
 view tile =
     div []
         [ button [ onClick Rotate ] [ text "Rotate" ]
-        , div [] [ renderTile init ]
+        , div [] [ renderTile tile ]
         ]
