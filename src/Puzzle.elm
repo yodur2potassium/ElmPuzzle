@@ -78,8 +78,10 @@ rotateTile tile =
 
 -- Update
 
-type Msg
-    = Rotate
+type Msg = 
+    Rotate
+    | Reset
+
 
 
 update : Msg -> Tile -> Tile
@@ -87,6 +89,9 @@ update msg tile =
     case msg of
         Rotate ->
             rotateTile tile
+        
+        Reset ->
+            init
 
 
 
@@ -134,6 +139,6 @@ orientationToPath orientation =
 view : Tile -> Html Msg
 view tile =
     div []
-        [ button [ onClick Rotate ] [ text "Rotate" ]
+        [ button [ onClick Reset ] [ text "Reset" ]
         , div [] [ renderTile tile |> svg ]
         ]
