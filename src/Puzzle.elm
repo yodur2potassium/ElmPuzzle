@@ -11,7 +11,6 @@ main =
     Browser.sandbox { init = init, update = update, view = view }
 
 
-
 -- Model
 
 init : Tile
