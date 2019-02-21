@@ -1,6 +1,6 @@
 import Browser
 import Collage exposing (..)
-import Collage.Layout exposing (stack)
+import Collage.Layout exposing (stack, horizontal)
 import Collage.Render exposing (svg)
 import Collage.Events as E
 import Color exposing (Color)
@@ -17,9 +17,18 @@ main =
 init : Tile
 init =
     { sides = [ Empty, Connected False, Connected True, Empty ]
-    , orientations = [ Up, Right, Down, Left ]
+    , orientations = dir4
     }
 
+testBoard : Board
+testBoard = 
+    [ Tile [ Empty, Connected False, Connected True, Empty ] dir4
+    , Tile [ Connected False, Connected False, Connected True, Empty ] dir4
+    , Tile [ Empty, Connected False, Empty, Connected True ] dir4
+    , Tile [ Empty, Empty, Connected True, Empty ] dir4
+    ]
+
+dir4 = [ Up, Right, Down, Left ]
 
 type Orientation
     = Up
@@ -38,6 +47,7 @@ type alias Tile =
     , orientations : List Orientation
     }
 
+type alias Board = List Tile
 
 hasConnection : Side -> Bool
 hasConnection side =
@@ -78,8 +88,8 @@ rotateTile tile =
 
 -- Update
 
-type Msg = 
-    Rotate
+type Msg 
+    = Rotate
     | Reset
 
 
@@ -97,11 +107,15 @@ update msg tile =
 
 -- View
 
+renderBoard : Board -> Collage Msg
+renderBoard board =
+    horizontal <| List.map renderTile board
+
 renderTile : Tile -> Collage Msg
 renderTile tile =
     stack
     [
-        stack (stackPaths tile |> List.map (traced defaultLineStyle))
+        stack (createPaths tile |> List.map (traced defaultLineStyle))
         , square 50
             |> filled (uniform Color.lightBlue)
     ]
@@ -116,8 +130,8 @@ drawSide side orientation =
         False ->
             Nothing
 
-stackPaths : Tile -> List Path
-stackPaths tile = List.map2 drawSide tile.sides tile.orientations |> List.filterMap identity
+createPaths : Tile -> List Path
+createPaths tile = List.map2 drawSide tile.sides tile.orientations |> List.filterMap identity
  
 
 orientationToPath : Orientation -> Path
@@ -140,5 +154,5 @@ view : Tile -> Html Msg
 view tile =
     div []
         [ button [ onClick Reset ] [ text "Reset" ]
-        , div [] [ renderTile tile |> svg ]
+        , div [] [ renderBoard testBoard |> svg ]
         ]
