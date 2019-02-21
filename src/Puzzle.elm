@@ -2,6 +2,7 @@ import Browser
 import Collage exposing (..)
 import Collage.Layout exposing (stack)
 import Collage.Render exposing (svg)
+import Collage.Events as E
 import Color exposing (Color)
 import Html exposing (Html, button, div, h1, text)
 import Html.Events exposing (onClick)
@@ -91,7 +92,7 @@ update msg tile =
 
 -- View
 
-renderTile : Tile -> Html Msg
+renderTile : Tile -> Collage Msg
 renderTile tile =
     stack
     [
@@ -99,7 +100,7 @@ renderTile tile =
         , square 50
             |> filled (uniform Color.lightBlue)
     ]
-        |> svg
+        |> E.onClick Rotate
 
 drawSide : Side -> Orientation -> Maybe Path
 drawSide side orientation =
@@ -134,5 +135,5 @@ view : Tile -> Html Msg
 view tile =
     div []
         [ button [ onClick Rotate ] [ text "Rotate" ]
-        , div [] [ renderTile tile ]
+        , div [] [ renderTile tile |> svg ]
         ]
