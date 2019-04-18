@@ -18,14 +18,15 @@ init : Tile
 init =
     { sides = [ Empty, Connected False, Connected True, Empty ]
     , orientations = dir4
+    , id = 1
     }
 
 testBoard : Board
 testBoard = 
-    [ Tile [ Empty, Connected False, Connected True, Empty ] dir4
-    , Tile [ Connected False, Connected False, Connected True, Empty ] dir4
-    , Tile [ Empty, Connected False, Empty, Connected True ] dir4
-    , Tile [ Empty, Empty, Connected True, Empty ] dir4
+    [ Tile [ Empty, Connected False, Connected True, Empty ] dir4 1
+    , Tile [ Connected False, Connected False, Connected True, Empty ] dir4 2
+    , Tile [ Empty, Connected False, Empty, Connected True ] dir4 3
+    , Tile [ Empty, Empty, Connected True, Empty ] dir4 4
     ]
 
 dir4 = [ Up, Right, Down, Left ]
@@ -45,6 +46,7 @@ type Side
 type alias Tile =
     { sides : List Side
     , orientations : List Orientation
+    , id : Int
     }
 
 type alias Board = List Tile
@@ -72,8 +74,8 @@ isConnected side =
             False
 
 
-rotateLeft : List a -> List a
-rotateLeft list =
+cycleLeft : List a -> List a
+cycleLeft list =
     case list of
         [] ->
             []
@@ -81,27 +83,30 @@ rotateLeft list =
         x :: xs ->
             xs ++ [ x ]
 
-rotateTile : Tile -> Tile
-rotateTile tile =
-    { tile | sides = rotateLeft tile.sides }
+rotateTile : Tile -> Int -> Tile
+rotateTile tile id =
+    { tile | sides = cycleLeft tile.sides, id = id }
 
 
 -- Update
 
 type Msg 
-    = Rotate
+    = Rotate Int
     | Reset
 
 
 
 update : Msg -> Tile -> Tile
 update msg tile =
-    case msg of
-        Rotate ->
-            rotateTile tile
-        
-        Reset ->
-            init
+        -- let _ = Debug.log "Value of ID: " tile
+        let _ = Debug.log "Tile: " tile
+        in
+        case msg of
+            Rotate id ->
+                rotateTile tile id 
+            
+            Reset ->
+                init
 
 
 
@@ -119,7 +124,7 @@ renderTile tile =
         , square 50
             |> filled (uniform Color.lightBlue)
     ]
-        |> E.onClick Rotate
+        |> E.onClick (Rotate tile.id)
 
 drawSide : Side -> Orientation -> Maybe Path
 drawSide side orientation =
